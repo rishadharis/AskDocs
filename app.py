@@ -3,7 +3,9 @@ from streamlit_chat import message
 from backend.core import run_llm
 from typing import Set
 
-
+st.set_page_config(
+    page_title="Busto AskDocs",
+)
 # Add sidebar with user info
 with st.sidebar:
     st.title("Busto AskDocs")
@@ -27,7 +29,7 @@ documentation = st.selectbox(
 # Create a form for the input
 with st.form(key='prompt_form', clear_on_submit=True):
     prompt = st.text_input("Question", placeholder="Type your question here and press enter...")
-    submit_button = st.form_submit_button("Send")
+    submit_button = st.form_submit_button("Ask")
 
 if "user_prompt_history" not in st.session_state:
     st.session_state["user_prompt_history"] = []
