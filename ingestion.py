@@ -4,12 +4,13 @@ from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain_community.document_loaders import ReadTheDocsLoader
 from langchain_openai import OpenAIEmbeddings
 from langchain_pinecone import PineconeVectorStore
+from streamlit import secrets
 
 load_dotenv()
 
-openai_api_key = os.getenv("OPENAI_API_KEY")
-pinecone_api_key = os.getenv("PINECONE_API_KEY")
-pinecone_index_name = os.getenv("PINECONE_INDEX_NAME")
+openai_api_key = secrets["OPENAI_API_KEY"]
+pinecone_api_key = secrets["PINECONE_API_KEY"]
+pinecone_index_name = secrets["PINECONE_INDEX_NAME"]
 
 embeddings = OpenAIEmbeddings(api_key=openai_api_key, model="text-embedding-ada-002")
 
@@ -21,7 +22,7 @@ def ingest_docs():
     docs = text_splitter.split_documents(raw_docs)
     for doc in docs:
         new_url = doc.metadata["source"]
-        new_url = new_url.replace("langchain-docs","https://")
+        new_url = new_url.replace("langchain-docs","https:/").replace("\\", "/")
         doc.metadata.update({"source": new_url})
 
     print(f"Loaded {len(docs)} documents. Storing to Pinecone...")
@@ -34,3 +35,4 @@ def ingest_docs():
 
 if __name__ == "__main__":
     ingest_docs()
+    print("Finished!")
